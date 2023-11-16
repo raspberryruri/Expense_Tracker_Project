@@ -10,3 +10,4 @@ class Visuals():
        self.Theme.configure("TCheckbutton", font=self.Text, fg="black")
        self.Header = tkinter.font.Font(family="BM Hanna Pro", name="appHeaderFont", size=48, weight="bold")
        self.Error_Text = tkinter.font.Font(family="Yuanti TC Italic", name="appErrorTextFont", size=11, slant="italic")
+       self.LoginSuccess = 0
