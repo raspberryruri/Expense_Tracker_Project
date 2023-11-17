@@ -14,8 +14,13 @@ class Dashboard():
         # Class Attributes
         self.root = root
         self.Visuals = Visuals
-        self.username = getattr(Credentials, 'username', "Ruri")
-        self.email = getattr(Credentials, 'email', "raspberryruri@gmail.com")
+        self.username = "Ruri"
+        self.email = "raspberryruri@gmail.com"
+
+        # Update the StringVar values if Credentials is provided
+        if Credentials:
+            self.username = Credentials.username.get()
+            self.email = Credentials.email.get()
 
         # Creates TopLevel Window
         self.TopLevel = tkinter.Toplevel(self.root)
@@ -74,7 +79,7 @@ class Dashboard():
 
         # Edit Expense Button
         ttk.Button(FrameNE, style="primary-outline", text="Edit Expense",
-                   command=lambda: EditExpense(self.TopLevel, table)).grid(row=2, column=3)
+                   command=lambda: EditExpense(self.TopLevel, table, self.Visuals)).grid(row=2, column=3)
 
         # Delete Expense Button
         ttk.Button(FrameNE, style="primary-outline", text="Delete Expense",
@@ -198,7 +203,7 @@ def AddExpense(master, table, Visuals):
     # Wait for the pop-up window to be destroyed before allowing the main window to regain focus
     master.wait_window(popup)
 
-def EditExpense(master, table):
+def EditExpense(master, table, Visuals):
     selected_item = table.selection()
     if not selected_item:
         dialogs.Messagebox.ok(title="Error", message="Please select an expense to edit.")
@@ -218,6 +223,7 @@ def EditExpense(master, table):
     popup.grab_set()
 
     # StringVars for user inputs
+    id = item_values[0]
     date_var = tkinter.StringVar(value=item_values[1])
     payee_var = tkinter.StringVar(value=item_values[2])
     description_var = tkinter.StringVar(value=item_values[3])
@@ -250,7 +256,7 @@ def EditExpense(master, table):
     payment_mode_entry.bind("<FocusOut>", lambda event, x=payment_mode_var:validate_input(event, x))
 
     # Button to submit the form
-    submit_button = ttk.Button(popup, text="Submit", command=lambda: Database.AddExpense(date_var, payee_var, description_var, amount_var, payment_mode_var, table, popup))
+    submit_button = ttk.Button(popup, text="Submit", command=lambda: Database.EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_var, table, popup, Visuals, id))
     submit_button.grid(row=5, column=1, pady=10)
 
     # Resizes

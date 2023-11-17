@@ -96,6 +96,24 @@ def AddExpense(date_var, payee_var, description_var, amount_var, payment_mode_va
         popup.destroy()
         Dashboard.UpdateTable(table, Visuals)
 
+def EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_var, table, popup, Visuals, id):
+
+    if not date_var.get() or not payee_var.get() or not description_var.get() or not amount_var.get() or not payment_mode_var.get():
+        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!")
+
+    else:
+
+        with sqlite3.connect("Expense Tracker.db") as db:
+            cursor = db.cursor()
+            cursor.execute('UPDATE ExpenseTracker SET Date = ?, Payee = ?, Description = ?, Amount = ?, ModeOfPayment = ? WHERE ID = ?',
+                   (date_var.get(), payee_var.get(), description_var.get(), amount_var.get(), payment_mode_var.get(), id))
+            db.commit()
+
+        popup.destroy()
+        mb.Messagebox.ok(title='Data edited', message='We have updated the data and stored in the database as you wanted')
+        Dashboard.UpdateTable(table, Visuals)
+
+
 def DeleteExpense(values_selected):
     with sqlite3.connect("Expense Tracker.db") as db:
         cursor = db.cursor()
