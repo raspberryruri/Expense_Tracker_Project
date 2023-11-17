@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import messagebox
+import ttkbootstrap.dialogs.dialogs as dialogs
 import ttkbootstrap as ttk
 import ttkbootstrap.validation as validate
 import Database
@@ -124,7 +124,7 @@ def Start_Register(root, window, Credentials, Visuals):
 
 def Sign_Up(root, window, Credentials, Visuals, Button):
     if Database.RegisterUser(Credentials) is True:
-        messagebox.showinfo(icon="info", message="User successfully registered!")
+        dialogs.Messagebox.ok(title="Success!", message="User successfully registered!")
         Start_Login(root, window, Credentials, Visuals)
     else:
         Credentials.username.set("")
@@ -132,16 +132,16 @@ def Sign_Up(root, window, Credentials, Visuals, Button):
 
 def Log_In(root, window, Credentials, Visuals):
     if Database.LoginUser(Credentials) is True:
-        messagebox.showinfo(icon="info", message="Successfully Logged In!")
+        dialogs.Messagebox.ok(title="Success!", message="Successfully logged in!")
 
         # Start Dashboard
-        MainPage = Dashboard.Dashboard(root, Visuals)
+        MainPage = Dashboard.Dashboard(root, Visuals, Credentials)
         MainPage.Create_Dashboard()
 
         window.destroy()
 
     else:
-        messagebox.showinfo(icon="info", message="Invalid Login Credentials.")
+        dialogs.Messagebox.ok(title=":(", message="Invalid Login Credentials")
 
 # Deletes the preview text when user focuses an Entry Widget
 def Delete_Text(event, Visuals):
