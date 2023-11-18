@@ -2,6 +2,7 @@ import sqlite3
 import tkinter
 import ttkbootstrap as ttk
 import ttkbootstrap.dialogs.dialogs as dialogs
+from ttkbootstrap.tableview import Tableview
 
 import Database
 import Theme
@@ -30,79 +31,82 @@ class Dashboard():
         self.TopLevel.rowconfigure(0, weight=1)
         self.TopLevel.rowconfigure(1, weight=5)
 
-    def Create_Dashboard(self):
-
         # Creates Left Frame
-        FrameW = ttk.Frame(self.TopLevel)
-        FrameW.grid(column=0, row=0, rowspan=2, sticky="nwes")
+        self.FrameW = ttk.Frame(self.TopLevel)
+        self.FrameW.grid(column=0, row=0, rowspan=2, sticky="nwes")
 
         # ExpenseMate
-        ttk.Label(FrameW, text="ExpenseMate", font=self.Visuals.BigText, anchor="center").grid(row=1, column=1, sticky="nwes")
+        ttk.Label(self.FrameW, text="ExpenseMate", font=self.Visuals.BigText, anchor="center").grid(row=1, column=1,
+                                                                                               sticky="nwes")
 
         # Separator
-        ttk.Separator(FrameW).grid(row=2, column=1, sticky="nwe")
+        ttk.Separator(self.FrameW).grid(row=2, column=1, sticky="nwe")
 
         # Username (Change)
-        ttk.Label(FrameW, text=self.username, font=self.Visuals.BigText, anchor="center").grid(row=3, column=1, sticky="wes")
+        ttk.Label(self.FrameW, text=self.username, font=self.Visuals.BigText, anchor="center").grid(row=3, column=1,
+                                                                                               sticky="wes")
 
         # Email (Change)
-        ttk.Label(FrameW, text=self.email, font=self.Visuals.Text, anchor="center").grid(row=4, column=1, sticky="nwe")
-
-        # Budget Button
-        ttk.Button(FrameW, text="Budget", bootstyle="link").grid(row=5, column=1)
+        ttk.Label(self.FrameW, text=self.email, font=self.Visuals.Text, anchor="center").grid(row=4, column=1, sticky="nwe")
 
         # Resizing
-        FrameW.rowconfigure(0, weight=0)
-        FrameW.rowconfigure(1, weight=1)
-        FrameW.rowconfigure(2, weight=1)
-        FrameW.rowconfigure(3, weight=1)
-        FrameW.rowconfigure(4, weight=1)
-        FrameW.rowconfigure(5, weight=1)
-        FrameW.rowconfigure(6, weight=1)
-        FrameW.columnconfigure(1, weight=1)
-
+        self.FrameW.rowconfigure(0, weight=0)
+        self.FrameW.rowconfigure(1, weight=1)
+        self.FrameW.rowconfigure(2, weight=1)
+        self.FrameW.rowconfigure(3, weight=1)
+        self.FrameW.rowconfigure(4, weight=1)
+        self.FrameW.rowconfigure(5, weight=1)
+        self.FrameW.rowconfigure(6, weight=1)
+        self.FrameW.columnconfigure(1, weight=1)
 
         # Creates Top Right Frame
-        FrameNE = ttk.Frame(self.TopLevel, bootstyle="light")
-        FrameNE.grid(column=1, row=0, sticky="nwes")
+        self.FrameNE = ttk.Frame(self.TopLevel, bootstyle="light")
+        self.FrameNE.grid(column=1, row=0, sticky="nwes")
+
+        # Creates Bottom Right Frame
+        self.FrameSE = ttk.Frame(self.TopLevel, bootstyle="light")
+        self.FrameSE.grid(column=1, row=1, sticky="nwes")
+
+    def Create_Expense(self):
+
+        # Budget Button
+        ttk.Button(self.FrameW, text="Budget", bootstyle="link", command=lambda: self.StartBudget()).grid(row=5, column=1)
 
         # Date
         current_date = datetime.now()
-        ttk.Label(FrameNE,anchor="center", text= f"{current_date.strftime('%B %d')}", font=self.Visuals.BoldText, background=self.Visuals.Theme.colors.get("light")).grid(row=1, column=1, sticky="s")
+        ttk.Label(self.FrameNE,anchor="center", text= f"{current_date.strftime('%B %d')}", font=self.Visuals.BoldText, background=self.Visuals.Theme.colors.get("light")).grid(row=1, column=1, sticky="s")
         first_day = current_date.replace(day=1)
         last_day = (first_day.replace(month=first_day.month % 12 + 1, day=1) - timedelta(days=1))
         daterange = f"{first_day.strftime('%d')} - {last_day.strftime('%d %B, %Y')}"
-        ttk.Label(FrameNE, text=daterange, font=self.Visuals.Text, background=self.Visuals.Theme.colors.get("light")).grid(row=2, column=1)
+        ttk.Label(self.FrameNE, text=daterange, font=self.Visuals.Text, background=self.Visuals.Theme.colors.get("light")).grid(row=2, column=1)
 
         # Expenses
-        ttk.Label(FrameNE, text="Expenses", font=self.Visuals.BoldText, anchor="center", background=self.Visuals.Theme.colors.get("light")).grid(row=1, column=3, columnspan=3, sticky="swe")
+        ttk.Label(self.FrameNE, text="Expenses", font=self.Visuals.BoldText, anchor="center", background=self.Visuals.Theme.colors.get("light")).grid(row=1, column=3, columnspan=3, sticky="swe")
 
         # Edit Expense Button
-        ttk.Button(FrameNE, style="primary-outline", text="Edit Expense",
+        ttk.Button(self.FrameNE, style="primary-outline", text="Edit Expense",
                    command=lambda: EditExpense(self.TopLevel, table, self.Visuals)).grid(row=2, column=3)
 
         # Delete Expense Button
-        ttk.Button(FrameNE, style="primary-outline", text="Delete Expense",
+        ttk.Button(self.FrameNE, style="primary-outline", text="Delete Expense",
                    command=lambda: DeleteExpense(table, self.Visuals)).grid(row=2, column=4)
 
         # Add Expense Button
-        ttk.Button(FrameNE, style="primary-outline", text="Add Expense", command=lambda: AddExpense(self.TopLevel, table, self.Visuals)).grid(row=2, column=5)
+        ttk.Button(self.FrameNE, style="primary-outline", text="Add Expense", command=lambda: AddExpense(self.TopLevel, table, self.Visuals)).grid(row=2, column=5)
 
-        FrameNE.rowconfigure(1, weight=1)
-        FrameNE.rowconfigure(2, weight=1)
-        FrameNE.columnconfigure(1, weight=1)
-        FrameNE.columnconfigure(2, weight=4)
-        FrameNE.columnconfigure(3, weight=1)
-        FrameNE.columnconfigure(4, weight=0)
-        FrameNE.columnconfigure(5, weight=1)
+        self.FrameNE.rowconfigure(1, weight=1)
+        self.FrameNE.rowconfigure(2, weight=1)
+        self.FrameNE.columnconfigure(1, weight=1)
+        self.FrameNE.columnconfigure(2, weight=4)
+        self.FrameNE.columnconfigure(3, weight=1)
+        self.FrameNE.columnconfigure(4, weight=0)
+        self.FrameNE.columnconfigure(5, weight=1)
 
-        # Creates Bottom Right Frame
-        FrameSE = ttk.Frame(self.TopLevel, bootstyle="light")
-        FrameSE.grid(column=1, row=1, sticky="nwes")
+
 
         # Creates Table
         columns = ('ID', 'Date', 'Payee', 'Description', 'Amount', 'Mode of Payment')
-        table = ttk.Treeview(FrameSE, show="headings", columns=columns, bootstyle="info")
+        table = ttk.Treeview(self.FrameSE, show="headings", columns=columns, bootstyle="info")
         table.grid(row=1, column=1, sticky="nwes")
 
         # Inserts Table Headings
@@ -114,14 +118,93 @@ class Dashboard():
         table.heading('Mode of Payment', text='Mode of Payment', anchor="center")
 
         # Creates Scrollbar
-        Y_Scroller = ttk.Scrollbar(FrameSE, orient="vertical", command=table.yview, bootstyle="secondary-round")
+        Y_Scroller = ttk.Scrollbar(self.FrameSE, orient="vertical", command=table.yview, bootstyle="secondary-round")
         Y_Scroller.grid(row=1, column=2, sticky="ns")
         table.config(yscrollcommand=Y_Scroller.set)
 
-        FrameSE.rowconfigure(1, weight=1)
-        FrameSE.columnconfigure(1, weight=1)
+        self.FrameSE.rowconfigure(1, weight=1)
+        self.FrameSE.columnconfigure(1, weight=1)
 
         UpdateTable(table, self.Visuals)
+
+    def Create_Budget(self):
+
+        # Budget Button
+        ttk.Button(self.FrameW, text="Expenses", bootstyle="link", command=lambda: self.StartExpense()).grid(row=5, column=1)
+
+        # Date
+        current_date = datetime.now()
+        ttk.Label(self.FrameNE, anchor="center", text=f"{current_date.strftime('%B %d')}", font=self.Visuals.BoldText,
+                  background=self.Visuals.Theme.colors.get("light")).grid(row=1, column=1, sticky="s")
+        first_day = current_date.replace(day=1)
+        last_day = (first_day.replace(month=first_day.month % 12 + 1, day=1) - timedelta(days=1))
+        daterange = f"{first_day.strftime('%d')} - {last_day.strftime('%d %B, %Y')}"
+        ttk.Label(self.FrameNE, text=daterange, font=self.Visuals.Text,
+                  background=self.Visuals.Theme.colors.get("light")).grid(row=2, column=1)
+
+        # Expenses
+        ttk.Label(self.FrameNE, text="Budget", font=self.Visuals.BoldText, anchor="center",
+                  background=self.Visuals.Theme.colors.get("light")).grid(row=1, column=3, columnspan=2, sticky="swe")
+
+        # Add Balance Button
+        ttk.Button(self.FrameNE, style="primary-outline", text="Add Balance", command=lambda: AddBalance(self.TopLevel, table, self.username)).grid(row=2, column=3)
+
+        # Add Budget Button
+        ttk.Button(self.FrameNE, style="primary-outline", text="Add Budget", command=lambda: AddBudget(self.TopLevel, table, self.username)).grid(row=2, column=4)
+
+        self.FrameNE.rowconfigure(1, weight=1)
+        self.FrameNE.rowconfigure(2, weight=1)
+        self.FrameNE.columnconfigure(1, weight=1)
+        self.FrameNE.columnconfigure(2, weight=4)
+        self.FrameNE.columnconfigure(3, weight=1)
+        self.FrameNE.columnconfigure(4, weight=1)
+        self.FrameNE.columnconfigure(5, weight=0)
+
+
+        # Creates Table
+        coldata = [
+            {"text": "ID", "stretch": True, "anchor":"center"},
+            {"text": "Budget", "stretch": True, "anchor":"center"},
+            {"text": "Balance", "stretch": True, "anchor":"center"},
+        ]
+
+        rowdata = []
+
+        table = Tableview(
+            master=self.FrameSE,
+            coldata=coldata,
+            rowdata=rowdata,
+            searchable=True,
+            autofit=True,
+            autoalign=True,
+            stripecolor=(self.Visuals.Theme.colors.get("light"), None),
+            bootstyle="info"
+        )
+
+        table.grid(row=1, column=1, sticky="nwes")
+
+
+        self.FrameSE.rowconfigure(1, weight=1)
+        self.FrameSE.columnconfigure(1, weight=1)
+
+        UpdateTable2(table)
+
+    def StartExpense(self):
+        self.DestroyWidgets(self.FrameNE)
+        self.DestroyWidgets(self.FrameSE)
+        self.FrameW.forget()
+        self.Create_Expense()
+
+    def StartBudget(self):
+        self.DestroyWidgets(self.FrameNE)
+        self.DestroyWidgets(self.FrameSE)
+        self.FrameW.forget()
+        self.Create_Budget()
+
+    def DestroyWidgets(self, frame):
+        for widget in frame.winfo_children():
+            widget.destroy()
+
 
 def UpdateTable(table, Visuals):
 
@@ -129,7 +212,7 @@ def UpdateTable(table, Visuals):
     table.delete(*table.get_children())
 
     # Fetches Data from Database
-    with sqlite3.connect("Expense Tracker.db") as db:
+    with sqlite3.connect("ExpenseTracker.db") as db:
         all_data = db.execute('SELECT * FROM ExpenseTracker')
     data = all_data.fetchall()
 
@@ -141,6 +224,23 @@ def UpdateTable(table, Visuals):
     center_aligned_columns = [0, 1, 2, 3, 4, 5]
     for col in center_aligned_columns:
         table.column(table['columns'][col], anchor='center')
+
+def UpdateTable2(table):
+
+    # Resets Table Rows
+    table.delete_rows()
+
+    # Fetches Data from Database
+    with sqlite3.connect("Budget.db") as db:
+        all_data = db.execute('SELECT * FROM Budget')
+    data = all_data.fetchall()
+
+    # Inserts Data into Table
+    for values in data:
+        table.insert_row(values=values)
+
+    # Refreshes Table
+    table.load_table_data()
 
 
 def AddExpense(master, table, Visuals):
@@ -285,12 +385,79 @@ def DeleteExpense(table, Visuals):
     UpdateTable(table, Visuals)
     dialogs.Messagebox.ok(title='Record deleted!', message='The record you wanted to delete has been deleted successfully')
 
+def AddBudget(master, table, username):
+    # Create a Toplevel window for the pop-up
+    popup = ttk.Toplevel(master)
+    popup.title("Add Budget")
+
+    # Make the pop-up window transient for the main window
+    popup.transient(master)
+
+    # Make the pop-up window grab the focus
+    popup.grab_set()
+
+    # StringVars for user inputs
+    budget_var = tkinter.StringVar()
+
+    # Label and Entry
+    ttk.Label(popup, text="Budget:").grid(row=1, column=0, padx=10, pady=5)
+    payee_entry = ttk.Entry(popup, textvariable=budget_var)
+    payee_entry.grid(row=1, column=1, padx=10, pady=5)
+
+    # Button to submit the form
+    submit_button = ttk.Button(popup, text="Submit",command=lambda: Database.AddBudget(popup, budget_var, username), bootstyle="info")
+    submit_button.grid(row=2, column=0, pady=10, columnspan=2)
+
+    # Resizes
+    popup.columnconfigure(0, weight=1)
+    popup.columnconfigure(1, weight=1)
+    popup.rowconfigure(1, weight=1)
+    popup.rowconfigure(2, weight=1)
+
+    # Wait for the pop-up window to be destroyed before allowing the main window to regain focus
+    master.wait_window(popup)
+
+    UpdateTable2(table)
+
+def AddBalance(master, table, username):
+    # Create a Toplevel window for the pop-up
+    popup = ttk.Toplevel(master)
+    popup.title("Add Budget")
+
+    # Make the pop-up window transient for the main window
+    popup.transient(master)
+
+    # Make the pop-up window grab the focus
+    popup.grab_set()
+
+    # StringVars for user inputs
+    balance_var = tkinter.StringVar()
+
+    # Label and Entry
+    ttk.Label(popup, text="Balance:").grid(row=1, column=0, padx=10, pady=5)
+    payee_entry = ttk.Entry(popup, textvariable=balance_var)
+    payee_entry.grid(row=1, column=1, padx=10, pady=5)
+
+    # Button to submit the form
+    submit_button = ttk.Button(popup, text="Submit",command=lambda: Database.AddBalance(popup, balance_var, username), bootstyle="info")
+    submit_button.grid(row=2, column=0, pady=10, columnspan=2)
+
+    # Resizes
+    popup.columnconfigure(0, weight=1)
+    popup.columnconfigure(1, weight=1)
+    popup.rowconfigure(1, weight=1)
+    popup.rowconfigure(2, weight=1)
+
+    # Wait for the pop-up window to be destroyed before allowing the main window to regain focus
+    master.wait_window(popup)
+
+    UpdateTable2(table)
+
 def validate_input(event, textvar):
     selected_item = textvar.get()
 
     if selected_item not in ["Cash", "Credit Card", "Debit Card", "TNG E-Wallet"]:
         textvar.set("Select an item")
-
 
 
 
@@ -302,6 +469,7 @@ if __name__ == "__main__":
     root.withdraw()
 
     MainPage = Dashboard(root, Theme.Visuals(style="flatly"))
-    MainPage.Create_Dashboard()
+    #MainPage.Create_Expense()
+    MainPage.Create_Budget()
 
     root.mainloop()

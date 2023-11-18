@@ -136,7 +136,7 @@ def Log_In(root, window, Credentials, Visuals):
 
         # Start Dashboard
         MainPage = Dashboard.Dashboard(root, Visuals, Credentials)
-        MainPage.Create_Dashboard()
+        MainPage.Create_Expense()
 
         window.destroy()
 

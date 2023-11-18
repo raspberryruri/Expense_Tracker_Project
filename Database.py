@@ -19,7 +19,7 @@ with sqlite3.connect("UserTable.db") as db:
     db.commit()
 
 # Initialise Expenses Table
-with sqlite3.connect("Expense Tracker.db") as db:
+with sqlite3.connect("ExpenseTracker.db") as db:
     Expenses = db.cursor()
 
     Expenses.execute(
@@ -29,6 +29,23 @@ with sqlite3.connect("Expense Tracker.db") as db:
       'FOREIGN KEY (userID) REFERENCES UserTable(userID))')
 
     db.commit()
+
+# Initialise Budget Table
+with sqlite3.connect("Budget.db") as db:
+    Budget = db.cursor()
+
+    Budget.execute("""
+    CREATE TABLE IF NOT EXISTS Budget (
+        Budget_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        Budget INT,
+        Balance DECIMAL(10, 2),  
+        User_ID INT,
+        FOREIGN KEY (User_ID) REFERENCES UserTable(userID));
+        """)
+
+    db.commit()
+
+
 def RegisterUser(Credentials):
 
     with sqlite3.connect("UserTable.db") as db:
@@ -83,7 +100,7 @@ def AddExpense(date_var, payee_var, description_var, amount_var, payment_mode_va
 
     else:
 
-        with sqlite3.connect("Expense Tracker.db") as db:
+        with sqlite3.connect("ExpenseTracker.db") as db:
             cursor = db.cursor()
             cursor.execute(
                 'INSERT INTO ExpenseTracker (Date, Payee, Description, Amount, ModeOfPayment) VALUES (?, ?, ?, ?, ?)',
@@ -103,7 +120,7 @@ def EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_v
 
     else:
 
-        with sqlite3.connect("Expense Tracker.db") as db:
+        with sqlite3.connect("ExpenseTracker.db") as db:
             cursor = db.cursor()
             cursor.execute('UPDATE ExpenseTracker SET Date = ?, Payee = ?, Description = ?, Amount = ?, ModeOfPayment = ? WHERE ID = ?',
                    (date_var.get(), payee_var.get(), description_var.get(), amount_var.get(), payment_mode_var.get(), id))
@@ -115,8 +132,55 @@ def EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_v
 
 
 def DeleteExpense(values_selected):
-    with sqlite3.connect("Expense Tracker.db") as db:
+    with sqlite3.connect("ExpenseTracker.db") as db:
         cursor = db.cursor()
         cursor.execute('DELETE FROM ExpenseTracker WHERE ID=%d' % values_selected[
         0])  # SQL code to remove data from ExpenseTracker Table
         db.commit()
+
+def AddBudget(popup, budget, username):
+
+    if not budget.get():
+        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!")
+
+    else:
+        budget=budget.get()
+
+        with sqlite3.connect("UserTable.db") as db:
+            user_cursor = db.cursor()
+            user_cursor.execute("SELECT userID FROM UserTable WHERE username = ?", (username,))
+            userID = user_cursor.fetchone()
+            userID = userID[0]
+
+        print(budget, userID)
+
+        with sqlite3.connect("Budget.db") as db:
+            cursor = db.cursor()
+            cursor.execute("INSERT INTO Budget (Budget, Balance, User_ID) VALUES (?, ?, ?)", (budget, 0.0, userID))
+            db.commit()
+
+        popup.destroy()
+        mb.Messagebox.ok(title='Data edited', message='Data successfully updated!')
+
+
+def AddBalance(popup, balance, username):
+    if not balance.get():
+        mb.Messagebox.ok(title='Fields empty!',
+                         message="Please fill all the missing fields before pressing the add button!")
+
+    else:
+        balance = balance.get()
+
+        with sqlite3.connect("UserTable.db") as user_db:
+            user_cursor = user_db.cursor()
+            user_cursor.execute("SELECT userID FROM UserTable WHERE username = ?", (username,))
+            userID = user_cursor.fetchone()
+            userID = userID[0]
+
+        with sqlite3.connect("Budget.db") as budget_db:
+            cursor = budget_db.cursor()
+            cursor.execute("INSERT INTO Budget (Budget, Balance, User_ID) VALUES (?, ?, ?)", (0.0, balance, userID))
+            db.commit()
+
+        popup.destroy()
+        mb.Messagebox.ok(title='Data edited', message='Data successfully updated!')

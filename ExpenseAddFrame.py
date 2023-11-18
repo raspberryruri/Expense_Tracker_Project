@@ -5,7 +5,7 @@ import tkinter.messagebox as mb
 import tkinter.ttk as ttk
 import sqlite3
 # Creating Database system
-connector = sqlite3.connect("Expense Tracker.db")
+connector = sqlite3.connect("ExpenseTracker.db")
 cursor = connector.cursor()
 connector.execute(
   'CREATE TABLE IF NOT EXISTS ExpenseTracker (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Date DATETIME, Payee TEXT, Description TEXT, Amount FLOAT, ModeOfPayment TEXT)'

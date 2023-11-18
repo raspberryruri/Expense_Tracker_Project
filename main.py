@@ -11,11 +11,9 @@ root.withdraw()
 # Sets Theme/Fonts
 Visuals = Theme.Visuals(style="flatly")
 
-# Login Page Code
+# Program Start
 Credentials = Login_Page.Credentials()
 Login_Page.Login(root, Credentials, Visuals)
-
-# Dashboard Code
 
 
 root.mainloop()
