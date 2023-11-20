@@ -422,7 +422,7 @@ def AddBudget(master, table, username):
 def AddBalance(master, table, username):
     # Create a Toplevel window for the pop-up
     popup = ttk.Toplevel(master)
-    popup.title("Add Budget")
+    popup.title("Add Balance")
 
     # Make the pop-up window transient for the main window
     popup.transient(master)
