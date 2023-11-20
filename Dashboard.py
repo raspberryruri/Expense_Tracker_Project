@@ -89,7 +89,7 @@ class Dashboard():
 
         # Delete Expense Button
         ttk.Button(self.FrameNE, style="primary-outline", text="Delete Expense",
-                   command=lambda: DeleteExpense(table, self.Visuals)).grid(row=2, column=4)
+                   command=lambda: DeleteExpense(table, self.Visuals, self.TopLevel)).grid(row=2, column=4)
 
         # Add Expense Button
         ttk.Button(self.FrameNE, style="primary-outline", text="Add Expense", command=lambda: AddExpense(self.TopLevel, table, self.Visuals)).grid(row=2, column=5)
@@ -372,18 +372,18 @@ def EditExpense(master, table, Visuals):
     # Wait for the pop-up window to be destroyed before allowing the main window to regain focus
     master.wait_window(popup)
 
-def DeleteExpense(table, Visuals):
+def DeleteExpense(table, Visuals, parent):
     if not table.selection():  # If there is no table selected
-        dialogs.Messagebox.ok(title='No record selected!', message='Please select a record to delete!')
+        dialogs.Messagebox.ok(title='No record selected!', message='Please select a record to delete!', parent=parent)
         return
     current_selected_expense = table.item(table.focus())  # Set current selected item in table
     values_selected = current_selected_expense[
         'values']  # Selecting the Values needed to be deleted (Which is values)
-    surety = dialogs.Messagebox.yesno(title="Delete expense?", message="Action cannot be undone.")
+    surety = dialogs.Messagebox.yesno(title="Delete expense?", message="Action cannot be undone.", parent=parent)
     if surety == "Yes":
         Database.DeleteExpense(values_selected)
     UpdateTable(table, Visuals)
-    dialogs.Messagebox.ok(title='Record deleted!', message='The record you wanted to delete has been deleted successfully')
+    dialogs.Messagebox.ok(title='Record deleted!', message='The record you wanted to delete has been deleted successfully', parent=parent)
 
 def AddBudget(master, table, username):
     # Create a Toplevel window for the pop-up

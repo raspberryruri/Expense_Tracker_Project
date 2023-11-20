@@ -124,7 +124,7 @@ def Start_Register(root, window, Credentials, Visuals):
 
 def Sign_Up(root, window, Credentials, Visuals, Button):
     if Database.RegisterUser(Credentials) is True:
-        dialogs.Messagebox.ok(title="Success!", message="User successfully registered!")
+        dialogs.Messagebox.ok(title="Success!", message="User successfully registered!", parent=window)
         Start_Login(root, window, Credentials, Visuals)
     else:
         Credentials.username.set("")
@@ -132,7 +132,10 @@ def Sign_Up(root, window, Credentials, Visuals, Button):
 
 def Log_In(root, window, Credentials, Visuals):
     if Database.LoginUser(Credentials) is True:
-        dialogs.Messagebox.ok(title="Success!", message="Successfully logged in!")
+        print("success")
+        noti = dialogs.Messagebox.ok("Successfully logged in!", "Success", parent=window)
+        #window.wait_window(noti)
+
 
         # Start Dashboard
         MainPage = Dashboard.Dashboard(root, Visuals, Credentials)
@@ -209,7 +212,8 @@ def Registration(root, Credentials, Visuals):
               anchor="center").grid(column=1, row=2, sticky="swe")
 
     # Text
-    text = tkinter.Text(lFrame, autostyle=0, bg="white", highlightthickness=0, height=4, wrap="word", font=Visuals.Text, fg="black")
+    text = tkinter.Text(lFrame, autostyle=0, bg="white",bd=0, highlightthickness=0, height=4, wrap="word", font=Visuals.Text, fg="black")
+    text.configure(highlightbackground="white")
     text.tag_configure('tag-center', justify='center')
     text.insert("1.0", "We have freshly baked cookies for new visitors! ;>", "tag-center")
     text["state"] = "disabled"
@@ -377,7 +381,7 @@ def Login(root, Credentials, Visuals):
 
     # Text
     text = tkinter.Text(lFrame, autostyle=0, bg="white", highlightthickness=0, height=4, wrap="word", font=Visuals.Text,
-                        fg="black")
+                        fg="black", bd=0)
     text.tag_configure('tag-center', justify='center')
     text.insert("1.0", "Gimme a break. Christ on a pogo stick, somebody just shoot me, please!", "tag-center")
     text["state"] = "disabled"

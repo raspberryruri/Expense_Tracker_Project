@@ -127,7 +127,7 @@ def EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_v
             db.commit()
 
         popup.destroy()
-        mb.Messagebox.ok(title='Data edited', message='We have updated the data and stored in the database as you wanted')
+        mb.Messagebox.ok(title='Data edited', message='We have updated the data and stored in the database as you wanted', parent=popup)
         Dashboard.UpdateTable(table, Visuals)
 
 
@@ -141,7 +141,7 @@ def DeleteExpense(values_selected):
 def AddBudget(popup, budget, username):
 
     if not budget.get():
-        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!")
+        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!", parent=popup)
 
     else:
         budget=budget.get()
@@ -166,7 +166,8 @@ def AddBudget(popup, budget, username):
 def AddBalance(popup, balance, username):
     if not balance.get():
         mb.Messagebox.ok(title='Fields empty!',
-                         message="Please fill all the missing fields before pressing the add button!")
+                         message="Please fill all the missing fields before pressing the add button!",
+                         parent=popup)
 
     else:
         balance = balance.get()
