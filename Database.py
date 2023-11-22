@@ -96,7 +96,7 @@ def LoginUser(Credentials):
 def AddExpense(date_var, payee_var, description_var, amount_var, payment_mode_var, table, popup, Visuals):
 
     if not date_var.get() or not payee_var.get() or not description_var.get() or not amount_var.get() or not payment_mode_var.get():
-        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!")
+        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!", parent=popup)
 
     else:
 
@@ -116,7 +116,8 @@ def AddExpense(date_var, payee_var, description_var, amount_var, payment_mode_va
 def EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_var, table, popup, Visuals, id):
 
     if not date_var.get() or not payee_var.get() or not description_var.get() or not amount_var.get() or not payment_mode_var.get():
-        mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!")
+        #mb.Messagebox.ok(title='Fields empty!', message="Please fill all the missing fields before pressing the add button!", parent=popup)
+        popup.destroy()
 
     else:
 
@@ -127,7 +128,7 @@ def EditExpense(date_var, payee_var, description_var, amount_var, payment_mode_v
             db.commit()
 
         popup.destroy()
-        mb.Messagebox.ok(title='Data edited', message='We have updated the data and stored in the database as you wanted', parent=popup)
+        #mb.Messagebox.ok(title='Data edited', message='We have updated the data and stored in the database as you wanted', parent=popup)
         Dashboard.UpdateTable(table, Visuals)
 
 
@@ -152,15 +153,13 @@ def AddBudget(popup, budget, username):
             userID = user_cursor.fetchone()
             userID = userID[0]
 
-        print(budget, userID)
-
         with sqlite3.connect("Budget.db") as db:
             cursor = db.cursor()
             cursor.execute("INSERT INTO Budget (Budget, Balance, User_ID) VALUES (?, ?, ?)", (budget, 0.0, userID))
             db.commit()
 
         popup.destroy()
-        mb.Messagebox.ok(title='Data edited', message='Data successfully updated!')
+        #mb.Messagebox.ok(title='Data edited', message='Data successfully updated!', parent=popup)
 
 
 def AddBalance(popup, balance, username):
@@ -184,4 +183,4 @@ def AddBalance(popup, balance, username):
             db.commit()
 
         popup.destroy()
-        mb.Messagebox.ok(title='Data edited', message='Data successfully updated!')
+        #mb.Messagebox.ok(title='Data edited', message='Data successfully updated!', parent=popup)

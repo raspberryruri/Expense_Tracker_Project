@@ -306,7 +306,7 @@ def AddExpense(master, table, Visuals):
 def EditExpense(master, table, Visuals):
     selected_item = table.selection()
     if not selected_item:
-        dialogs.Messagebox.ok(title="Error", message="Please select an expense to edit.")
+        dialogs.Messagebox.ok(title="Error", message="Please select an expense to edit.", parent=master)
         return
 
     # Get values from the selected row
@@ -382,8 +382,10 @@ def DeleteExpense(table, Visuals, parent):
     surety = dialogs.Messagebox.yesno(title="Delete expense?", message="Action cannot be undone.", parent=parent)
     if surety == "Yes":
         Database.DeleteExpense(values_selected)
+        dialogs.Messagebox.ok(title='Record deleted!',
+                              message='The record you wanted to delete has been deleted successfully', parent=parent)
     UpdateTable(table, Visuals)
-    dialogs.Messagebox.ok(title='Record deleted!', message='The record you wanted to delete has been deleted successfully', parent=parent)
+
 
 def AddBudget(master, table, username):
     # Create a Toplevel window for the pop-up
