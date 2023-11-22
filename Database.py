@@ -81,6 +81,7 @@ def LoginUser(Credentials):
 
     else:
         if re.match("^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$", Credentials.username.get()):
+            Credentials.email.set(Credentials.username.get())
             statement = "SELECT username from UserTable WHERE email_address= ? AND password = ?"
             cursor.execute(statement, (Credentials.username.get(), Credentials.password.get()))
             Credentials.username.set("%s" % cursor.fetchone())
